@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QR visitor portal</title>
+  <script>
+    // Phones go straight to the portal; the presenter view is for laptops and screens.
+    if (window.innerWidth < 900 && !/[?&]stay/.test(location.search)) location.replace('portal.html' + location.search + location.hash);
+  </script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 40 40%27%3E%3Crect width=%2740%27 height=%2740%27 rx=%2712%27 fill=%27%232A2663%27/%3E%3Cpath d=%27M17 9h6v8h8v6h-8v8h-6v-8H9v-6h8z%27 fill=%27%23fff%27/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/base.css">
+  <style>
+    body {
+      min-height: 100vh; overflow-x: hidden;
+      background:
+        radial-gradient(900px 500px at 85% -10%, rgba(229,32,47,.18), transparent 60%),
+        radial-gradient(800px 600px at -10% 110%, rgba(42,38,99,.18), transparent 60%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='%232A2663' stroke-opacity='.06'%3E%3Crect x='18' y='18' width='20' height='20'/%3E%3Crect x='18' y='18' width='20' height='20' transform='rotate(45 28 28)'/%3E%3C/g%3E%3C/svg%3E"),
+        #F2F2F8;
+    }
+    .wrap { max-width: 1240px; margin: 0 auto; padding: 28px 40px; min-height: 100vh; display: grid; grid-template-rows: auto 1fr; gap: 20px; }
+    .bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand .logo { width: 44px; height: 44px; color: var(--primary); }
+    .brand b { display: block; font-size: 16px; }
+    .brand small { color: var(--muted); font-size: 13px; }
+    .lang-btn { height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--line); background: #fff; font-weight: 600; }
+    .stage { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 56px; align-items: center; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--primary); background: var(--tint); padding: 6px 14px; border-radius: 999px; }
+    .eyebrow i { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 4px rgba(31,138,85,.15); }
+    h1 { font-size: clamp(32px, 3.6vw, 48px); line-height: 1.15; margin-top: 16px; letter-spacing: -.02em; }
+    .lead { font-size: 17px; color: var(--ink-2); margin-top: 14px; max-width: 560px; }
+    .feats { list-style: none; padding: 0; margin: 26px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 22px; max-width: 620px; }
+    .feats li { display: flex; gap: 10px; align-items: flex-start; font-size: 14.5px; font-weight: 500; }
+    .feats .ck { width: 24px; height: 24px; border-radius: 8px; background: var(--primary); color: #fff; display: grid; place-items: center; flex: none; margin-top: 1px; }
+    .feats .ck .i { width: 14px; height: 14px; stroke-width: 3; }
+    .scan { margin-top: 30px; display: flex; gap: 20px; align-items: center; background: #fff; border-radius: 22px; padding: 16px; box-shadow: var(--shadow); max-width: 620px; }
+    .qr { width: 132px; height: 132px; flex: none; padding: 8px; border-radius: 14px; border: 1px solid var(--line); background: #fff; }
+    .qr img, .qr canvas { width: 100% !important; height: 100% !important; display: block; }
+    .scan b { font-size: 17px; display: block; }
+    .scan .url { direction: ltr; text-align: start; font-size: 12.5px; color: var(--muted); word-break: break-all; margin-top: 4px; }
+    .scan .warn { margin-top: 8px; font-size: 12.5px; color: #7A5212; background: #FFF6E6; padding: 8px 10px; border-radius: 10px; }
+    .ctas { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+    .try { margin-top: 16px; font-size: 13.5px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+    .try .i { color: var(--accent); }
+
+    .phone {
+      --h: min(820px, calc(100vh - 120px));
+      height: var(--h); width: calc(var(--h) * .485); min-height: 600px; min-width: 291px;
+      border-radius: 54px; padding: 12px; background: #121132; position: relative;
+      box-shadow: 0 0 0 2px #2C2B4E, 0 40px 80px rgba(22, 21, 58, .35), inset 0 0 0 2px #000;
+    }
+    .phone .sb { height: 40px; border-radius: 42px 42px 0 0; background: #F4F4F9; display: flex; align-items: center; justify-content: space-between; padding: 4px 30px 0; font-size: 13px; font-weight: 700; color: var(--ink); direction: ltr; position: relative; }
+    .phone .sb::after { content: ""; position: absolute; top: 9px; left: 50%; transform: translateX(-50%); width: 96px; height: 26px; border-radius: 20px; background: #000; }
+    .phone .sb .ind { display: flex; gap: 5px; align-items: center; }
+    .phone .sb .ind span { display: block; background: var(--ink); border-radius: 2px; }
+    .phone iframe { width: 100%; height: calc(100% - 40px); border: 0; border-radius: 0 0 42px 42px; background: #F4F4F9; display: block; }
+    .phone .glow { position: absolute; inset: -60px; z-index: -1; background: radial-gradient(closest-side, rgba(42,38,99,.25), transparent); }
+  </style>
+</head>
+<body data-title-key="pr_title">
+  <div class="wrap">
+    <header class="bar">
+      <div class="brand"><span class="logo" id="logo"></span><span><b data-brand="name"></b><small data-brand="city"></small></span></div>
+      <button class="lang-btn" id="langBtn" type="button"></button>
+    </header>
+
+    <div class="stage">
+      <section>
+        <span class="eyebrow"><i></i><span data-i18n="pr_eyebrow"></span></span>
+        <h1 data-i18n="pr_title"></h1>
+        <p class="lead" data-i18n="pr_lead"></p>
+        <ul class="feats" id="feats"></ul>
+
+        <div class="scan">
+          <div class="qr" id="qr"></div>
+          <div>
+            <b data-i18n="pr_scan"></b>
+            <div class="url" id="qrUrl"></div>
+            <div class="warn" id="fileWarn" hidden data-i18n="pr_file_warn"></div>
+          </div>
+        </div>
+
+        <div class="ctas">
+          <a class="btn" href="admin.html" target="_blank" id="adminBtn"></a>
+          <a class="btn ghost" href="portal.html" target="_blank" id="fullBtn"></a>
+        </div>
+        <p class="try" id="try"></p>
+      </section>
+
+      <div class="phone"><span class="glow"></span><div class="sb"><span>9:41</span><span class="ind"><span style="width:3px;height:6px"></span><span style="width:3px;height:8px"></span><span style="width:3px;height:10px"></span><span style="width:22px;height:11px;border-radius:3px;margin-inline-start:4px"></span></span></div><iframe src="portal.html" title="portal" allow="microphone; autoplay; encrypted-media"></iframe></div>
+    </div>
+  </div>
+
+  <script src="vendor/qrcode.min.js"></script>
+  <script src="assets/config.js"></script>
+  <script src="assets/i18n.js"></script>
+  <script src="assets/core.js"></script>
+  <script>
+    (function () {
+      const { t, icon, Store } = Q;
+      document.getElementById('logo').innerHTML = Q.LOGO;
+      const url = Store.get('qr_url', '') || (APP.shareUrl ? APP.shareUrl + '#scan' : new URL('portal.html?src=qr', location.href).href);
+      document.getElementById('qrUrl').textContent = url;
+      document.getElementById('fileWarn').hidden = !(location.protocol === 'file:' && !Store.get('qr_url', '') && !APP.shareUrl);
+      if (window.QRCode) new QRCode(document.getElementById('qr'), { text: url, width: 300, height: 300, colorDark: APP.brand.colors.primaryDark, colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+      function paint() {
+        document.getElementById('feats').innerHTML = ['pr_f1', 'pr_f2', 'pr_f3', 'pr_f4', 'pr_f5', 'pr_f6'].map(k => '<li><span class="ck">' + icon('check') + '</span>' + t(k) + '</li>').join('');
+        document.getElementById('adminBtn').innerHTML = icon('chart') + t('pr_admin');
+        document.getElementById('fullBtn').innerHTML = icon('external') + t('pr_full');
+        document.getElementById('try').innerHTML = icon('star') + '<span>' + t('pr_try') + '</span>';
+        document.getElementById('langBtn').textContent = t('lang_switch');
+      }
+      document.addEventListener('langchange', paint);
+      document.getElementById('langBtn').addEventListener('click', () => Q.setLang(Q.getLang() === 'ar' ? 'en' : 'ar'));
+      // keep the phone in the same language as the page
+      window.addEventListener('storage', e => { if (e.key === 'qrp_lang') { Q.setLang(JSON.parse(e.newValue)); } });
+      Q.applyLang();
+    })();
+  </script>
+</body>
+</html>
